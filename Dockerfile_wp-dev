@@ -1,0 +1,8 @@
+FROM wordpress:latest
+RUN chsh -s /bin/bash www-data
+RUN chown www-data:www-data /var/www
+RUN curl -o /bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+RUN chmod +x /bin/wp
+COPY www/wp-cli.yml /var/www/html/wp-cli.yml
+COPY www/setup.sh /var/www/html/setup.sh
+COPY Makefile /var/www/html/Makefile

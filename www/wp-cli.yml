@@ -1,0 +1,10 @@
+url: http:/localhost
+color: true
+
+core install:
+    title: My Journal
+    description: My Journal WordPress Template
+    url: localhost
+    admin_user: admin
+    admin_password: admin
+    admin_email: admin@myjournal.local

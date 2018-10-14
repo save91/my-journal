@@ -1,0 +1,19 @@
+version: '3.3'
+
+services:
+  db:
+    container_name: db
+    image: mysql:5.7
+    restart: always
+    env_file:
+      - ./conf/dev.env
+
+  wordpress:
+    container_name: wp
+    links:
+      - db
+    image: myjournal:wp-dev
+    ports:
+      - "80:80"
+    env_file:
+      - ./conf/dev.env
