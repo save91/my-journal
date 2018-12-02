@@ -1,6 +1,10 @@
 # my-journal
 A boilerplate for the creation of a complete journal system with backend, frontend, PWA and apps.
 
+## Prerequisites
+
+- docker [https://docs.docker.com/install/](https://docs.docker.com/install/)
+- docker-compose [https://docs.docker.com/compose/install/#install-compose](https://docs.docker.com/compose/install/#install-compose)
 
 ## Setup
 
