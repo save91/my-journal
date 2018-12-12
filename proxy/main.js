@@ -1,8 +1,15 @@
 const express = require('express')
 const axios = require('axios')
+const environment = require('./environment');
 const PORT = 8080
 
 const app = express()
+const { serverAddress, serverPort, serverProtocol } = environment;
+
+const baseUrl = `${serverProtocol}://${serverAddress}`
+if (serverPort) {
+    baseUrl.concat(':', serverPort)
+}
 
 const parseWordPressPost = (wpPost) => {
     return {
@@ -11,7 +18,8 @@ const parseWordPressPost = (wpPost) => {
 }
 
 app.get('/posts', async (req, res) => {
-    const responseFromWp = await axios.get('http://localhost/wp-json/wp/v2/posts')
+    const postsUrl = `${baseUrl}/wp-json/wp/v2/posts`;
+    const responseFromWp = await axios.get(postsUrl)
     const toReturn = responseFromWp.data.map(post => parseWordPressPost(post))
     res.send(toReturn)
 })
