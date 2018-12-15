@@ -18,7 +18,7 @@ public final class NetworkUtils {
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
     private static final String PROXY_BASE_URL =
-            "http://192.168.1.167";
+            "http://192.168.150.232";
 
     private static final String PROXY_PORT =
             "8080";

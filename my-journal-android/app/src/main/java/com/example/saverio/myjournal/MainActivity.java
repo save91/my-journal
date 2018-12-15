@@ -1,5 +1,7 @@
 package com.example.saverio.myjournal;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -68,8 +70,14 @@ public class MainActivity extends AppCompatActivity implements PostAdapter.PostA
     }
 
     @Override
-    public void onClick(String param) {
-        Toast.makeText(this, param, Toast.LENGTH_LONG).show();
+    public void onClick(String title) {
+        Context context = this;
+        Class destinationActivity = DetailActivity.class;
+
+        Intent intent = new Intent(context, destinationActivity);
+        intent.putExtra(Intent.EXTRA_TEXT, title);
+
+        startActivity(intent);
     }
 
     private void showPostsDataView() {
