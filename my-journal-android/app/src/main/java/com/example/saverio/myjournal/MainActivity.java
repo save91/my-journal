@@ -1,8 +1,14 @@
 package com.example.saverio.myjournal;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,15 +19,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.saverio.myjournal.utilities.NetworkUtils;
 import com.example.saverio.myjournal.utilities.ProxyPostsJsonUtils;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements PostAdapter.PostAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity implements PostAdapter.PostAdapterOnClickHandler, LoaderManager.LoaderCallbacks<String[]> {
 
+    private static final int FORECAST_LOADER_ID = 22;
     private RecyclerView mRecyclerView;
     private PostAdapter mPostAdapter;
     private TextView mErrorMessageTextView;
@@ -60,14 +66,32 @@ public class MainActivity extends AppCompatActivity implements PostAdapter.PostA
         mRecyclerView.setAdapter(mPostAdapter);
         mLoadingProgressBar = findViewById(R.id.pb_loading);
 
-        loadPostsData();
+        int loaderId = FORECAST_LOADER_ID;
+
+        /*
+         * From MainActivity, we have implemented the LoaderCallbacks interface with the type of
+         * String array. (implements LoaderCallbacks<String[]>) The variable callback is passed
+         * to the call to initLoader below. This means that whenever the loaderManager has
+         * something to notify us of, it will do so through this callback.
+         */
+        LoaderManager.LoaderCallbacks<String[]> callback = MainActivity.this;
+
+        /*
+         * The second parameter of the initLoader method below is a Bundle. Optionally, you can
+         * pass a Bundle to initLoader that you can then access from within the onCreateLoader
+         * callback. In our case, we don't actually use the Bundle, but it's here in case we wanted
+         * to.
+         */
+        Bundle bundleForLoader = null;
+
+        /*
+         * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
+         * created and (if the activity/fragment is currently started) starts the loader. Otherwise
+         * the last created loader is re-used.
+         */
+        getSupportLoaderManager().initLoader(loaderId, bundleForLoader, callback);
     }
 
-    private void loadPostsData() {
-        showPostsDataView();
-
-        new FetchPostsTask().execute();
-    }
 
     @Override
     public void onClick(String title) {
@@ -90,43 +114,64 @@ public class MainActivity extends AppCompatActivity implements PostAdapter.PostA
         mErrorMessageTextView.setVisibility(View.VISIBLE);
     }
 
-    public class FetchPostsTask extends AsyncTask<Void, Void, String[]> {
+    @SuppressLint("StaticFieldLeak")
+    @NonNull
+    @Override
+    public Loader<String[]> onCreateLoader(int i, @Nullable Bundle bundle) {
+        return new AsyncTaskLoader<String[]>(this) {
+            String[] mPostsData = null;
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingProgressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected String[] doInBackground(Void... params) {
-            URL postsUrl = NetworkUtils.buildPostsUrl();
-
-            try {
-                String jsonPostsResponse = NetworkUtils
-                        .getResponseFromHttpUrl(postsUrl);
-
-                String[] simpleJsonPostsData = ProxyPostsJsonUtils
-                        .getSimplePostsStringsFromJson(jsonPostsResponse);
-
-                return simpleJsonPostsData;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String[] postsData) {
-            mLoadingProgressBar.setVisibility(View.INVISIBLE);
-            if (postsData != null) {
+            @Override
+            protected void onStartLoading() {
                 showPostsDataView();
-                mPostAdapter.setPostsData(postsData);
-            } else {
-                showErrorMessage();
+                if (mPostsData != null) {
+                    deliverResult(mPostsData);
+                } else {
+                    mLoadingProgressBar.setVisibility(View.VISIBLE);
+                    forceLoad();
+                }
             }
+
+            @Override
+            public String[] loadInBackground() {
+                URL postsUrl = NetworkUtils.buildPostsUrl();
+
+                try {
+                    String jsonPostsResponse = NetworkUtils
+                            .getResponseFromHttpUrl(postsUrl);
+
+                    String[] simpleJsonPostsData = ProxyPostsJsonUtils
+                            .getSimplePostsStringsFromJson(jsonPostsResponse);
+
+                    return simpleJsonPostsData;
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            public void deliverResult(@Nullable String[] data) {
+                mPostsData = data;
+                super.deliverResult(data);
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<String[]> loader, String[] data) {
+        mLoadingProgressBar.setVisibility(View.INVISIBLE);
+        mPostAdapter.setPostsData(data);
+        if (null == data) {
+            showErrorMessage();
+        } else {
+            showPostsDataView();
         }
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<String[]> loader) {
 
     }
 
@@ -144,10 +189,15 @@ public class MainActivity extends AppCompatActivity implements PostAdapter.PostA
 
         if (id == R.id.action_refresh) {
             mPostAdapter.setPostsData(null);
-            loadPostsData();
+            invalidateData();
+            getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void invalidateData() {
+        mPostAdapter.setPostsData(null);
     }
 }
