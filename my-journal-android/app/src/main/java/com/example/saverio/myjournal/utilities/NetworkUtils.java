@@ -17,21 +17,15 @@ public final class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
-    private static final String PROXY_BASE_URL =
-            "http://192.168.150.232";
-
-    private static final String PROXY_PORT =
-            "8080";
-
-    private static final String POSTS_URL = PROXY_BASE_URL + ":" + PROXY_PORT + "/posts";
+    private static final String POSTS_PATH = "/posts";
 
     /**
      * Builds the URL used to talk to the proxy server
      *
      * @return The URL to use to posts from proxy server.
      */
-    public static URL buildPostsUrl() {
-        Uri builtUri = Uri.parse(POSTS_URL).buildUpon()
+    public static URL buildPostsUrl(String server) {
+        Uri builtUri = Uri.parse(server + POSTS_PATH).buildUpon()
                 .build();
 
         URL url = null;

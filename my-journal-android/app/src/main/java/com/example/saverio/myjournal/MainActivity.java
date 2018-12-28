@@ -3,6 +3,7 @@ package com.example.saverio.myjournal;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -20,18 +22,23 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.saverio.myjournal.data.MyJournalPreferences;
 import com.example.saverio.myjournal.utilities.NetworkUtils;
 import com.example.saverio.myjournal.utilities.ProxyPostsJsonUtils;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements PostAdapter.PostAdapterOnClickHandler, LoaderManager.LoaderCallbacks<String[]> {
+public class MainActivity extends AppCompatActivity implements
+        PostAdapter.PostAdapterOnClickHandler,
+        LoaderManager.LoaderCallbacks<String[]>,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int FORECAST_LOADER_ID = 22;
     private RecyclerView mRecyclerView;
     private PostAdapter mPostAdapter;
     private TextView mErrorMessageTextView;
     private ProgressBar mLoadingProgressBar;
+    private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +97,33 @@ public class MainActivity extends AppCompatActivity implements PostAdapter.PostA
          * the last created loader is re-used.
          */
         getSupportLoaderManager().initLoader(loaderId, bundleForLoader, callback);
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (PREFERENCES_HAVE_BEEN_UPDATED == true) {
+            mPostAdapter.setPostsData(null);
+            invalidateData();
+            getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
+            PREFERENCES_HAVE_BEEN_UPDATED = false;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        PREFERENCES_HAVE_BEEN_UPDATED = true;
+    }
 
     @Override
     public void onClick(String title) {
@@ -134,7 +166,8 @@ public class MainActivity extends AppCompatActivity implements PostAdapter.PostA
 
             @Override
             public String[] loadInBackground() {
-                URL postsUrl = NetworkUtils.buildPostsUrl();
+                String server = MyJournalPreferences.getServer(MainActivity.this);
+                URL postsUrl = NetworkUtils.buildPostsUrl(server);
 
                 try {
                     String jsonPostsResponse = NetworkUtils
@@ -194,10 +227,18 @@ public class MainActivity extends AppCompatActivity implements PostAdapter.PostA
             return true;
         }
 
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+
+            startActivity(intent);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
     private void invalidateData() {
         mPostAdapter.setPostsData(null);
     }
+
 }
