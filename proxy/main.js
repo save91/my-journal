@@ -1,6 +1,7 @@
 const express = require('express')
 const axios = require('axios')
-const environment = require('./environment');
+const he = require('he')
+const environment = require('./environment')
 const PORT = 8080
 
 const app = express()
@@ -13,7 +14,7 @@ if (serverPort) {
 
 const parseWordPressPost = (wpPost) => {
     return {
-        title: wpPost.title.rendered
+        title: he.decode(wpPost.title.rendered)
     }
 }
 
