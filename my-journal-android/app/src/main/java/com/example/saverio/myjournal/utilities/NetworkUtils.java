@@ -17,7 +17,7 @@ public final class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
-    private static final String POSTS_PATH = "/posts";
+    private static final String POSTS_PATH = "/api/v1.0/posts";
 
     /**
      * Builds the URL used to talk to the proxy server
