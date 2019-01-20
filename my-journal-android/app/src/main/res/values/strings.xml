@@ -10,5 +10,7 @@
     <string name="pref_server_key" translatable="false">server</string>
     <string name="pref_server_default" translatable="false">http://10.0.2.2:8080</string>
 
+    <string name="desc_post_thundbail">Post thundbail</string>
+
     <string name="title_activity_settings">Settings</string>
 </resources>
