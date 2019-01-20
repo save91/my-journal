@@ -1,5 +1,7 @@
 package com.example.saverio.myjournal.utilities;
 
+import com.example.saverio.myjournal.data.Post;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,26 +25,37 @@ public final class ProxyPostsJsonUtils {
      *
      * @throws JSONException If JSON data cannot be properly parsed
      */
-    public static String[] getSimplePostsStringsFromJson(String postsJsonStr)
+    public static Post[] getSimplePostsStringsFromJson(String postsJsonStr)
             throws JSONException {
 
-
+        final String OWM_ID = "id";
         final String OWM_TITLE = "title";
+        final String OWM_FEATURE_MEDIA = "featured_media";
+        final String OWM_THUMBNAIL_URL = "thumbnail_url";
 
         /* String array to hold each post's info String */
-        String[] parsedPostsData = null;
+        Post[] parsedPostsData = null;
 
         JSONArray postsArray = new JSONArray(postsJsonStr);
 
-        parsedPostsData = new String[postsArray.length()];
+        parsedPostsData = new Post[postsArray.length()];
 
         for (int i = 0; i < postsArray.length(); i++) {
             /* Get the JSON object representing the post */
-            JSONObject post = postsArray.getJSONObject(i);
+            JSONObject JSONpost = postsArray.getJSONObject(i);
 
-            String title = post.getString(OWM_TITLE);
+            String id = JSONpost.getString(OWM_ID);
+            String title = JSONpost.getString(OWM_TITLE);
+            JSONObject JSONfeatureMedia = JSONpost.getJSONObject(OWM_FEATURE_MEDIA);
+            String thumbnailUrl = JSONfeatureMedia.getString(OWM_THUMBNAIL_URL);
 
-            parsedPostsData[i] = title;
+            Post post = new Post();
+            post.setId(id);
+            post.setTitle(title);
+            post.setThumbnailUrl(thumbnailUrl);
+
+
+            parsedPostsData[i] = post;
         }
 
         return parsedPostsData;

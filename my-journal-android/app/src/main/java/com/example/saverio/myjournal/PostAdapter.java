@@ -1,15 +1,22 @@
 package com.example.saverio.myjournal;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterViewHolder> {
+import com.example.saverio.myjournal.data.Post;
+import com.squareup.picasso.Picasso;
 
-    private String[] mPostsData;
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterViewHolder> {
+    private final String TAG = "PostAdapter";
+
+    private Post[] mPostsData;
     private PostAdapterOnClickHandler mClickHandler;
 
     interface PostAdapterOnClickHandler {
@@ -25,10 +32,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterVie
      */
     public class PostAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final TextView mPostTextView;
+        public final ImageView mPostThunbnail;
 
         public PostAdapterViewHolder(View view) {
             super(view);
             mPostTextView = view.findViewById(R.id.tv_post_title);
+            mPostThunbnail = view.findViewById(R.id.iv_post_thundbail);
             view.setOnClickListener(this);
         }
 
@@ -71,9 +80,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterVie
      * @param position              The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(PostAdapterViewHolder PostAdapterViewHolder, int position) {
-        String postTitle = mPostsData[position];
-        PostAdapterViewHolder.mPostTextView.setText(postTitle);
+    public void onBindViewHolder(PostAdapterViewHolder postAdapterViewHolder, int position) {
+        Post post = mPostsData[position];
+
+        postAdapterViewHolder.mPostTextView.setText(post.getTitle());
+        Uri uri = Uri.parse(post.getThumbnailUrl());
+        Log.d(TAG, "post.getThumbnailUrl(): " + post.getThumbnailUrl());
+        Picasso.with(postAdapterViewHolder.mPostThunbnail.getContext()).load(uri)
+                .into(postAdapterViewHolder.mPostThunbnail);
     }
 
     /**
@@ -95,7 +109,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterVie
      *
      * @param postsData The new weather data to be displayed.
      */
-    public void setPostsData(String[] postsData) {
+    public void setPostsData(Post[] postsData) {
         mPostsData = postsData;
         notifyDataSetChanged();
     }

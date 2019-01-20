@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.saverio.myjournal.data.MyJournalPreferences;
+import com.example.saverio.myjournal.data.Post;
 import com.example.saverio.myjournal.utilities.NetworkUtils;
 import com.example.saverio.myjournal.utilities.ProxyPostsJsonUtils;
 
@@ -30,7 +31,7 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements
         PostAdapter.PostAdapterOnClickHandler,
-        LoaderManager.LoaderCallbacks<String[]>,
+        LoaderManager.LoaderCallbacks<Post[]>,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int FORECAST_LOADER_ID = 22;
@@ -77,11 +78,11 @@ public class MainActivity extends AppCompatActivity implements
 
         /*
          * From MainActivity, we have implemented the LoaderCallbacks interface with the type of
-         * String array. (implements LoaderCallbacks<String[]>) The variable callback is passed
+         * String array. (implements LoaderCallbacks<Post[]>) The variable callback is passed
          * to the call to initLoader below. This means that whenever the loaderManager has
          * something to notify us of, it will do so through this callback.
          */
-        LoaderManager.LoaderCallbacks<String[]> callback = MainActivity.this;
+        LoaderManager.LoaderCallbacks<Post[]> callback = MainActivity.this;
 
         /*
          * The second parameter of the initLoader method below is a Bundle. Optionally, you can
@@ -149,9 +150,9 @@ public class MainActivity extends AppCompatActivity implements
     @SuppressLint("StaticFieldLeak")
     @NonNull
     @Override
-    public Loader<String[]> onCreateLoader(int i, @Nullable Bundle bundle) {
-        return new AsyncTaskLoader<String[]>(this) {
-            String[] mPostsData = null;
+    public Loader<Post[]> onCreateLoader(int i, @Nullable Bundle bundle) {
+        return new AsyncTaskLoader<Post[]>(this) {
+            Post[] mPostsData = null;
 
             @Override
             protected void onStartLoading() {
@@ -165,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements
             }
 
             @Override
-            public String[] loadInBackground() {
+            public Post[] loadInBackground() {
                 String server = MyJournalPreferences.getServer(MainActivity.this);
                 URL postsUrl = NetworkUtils.buildPostsUrl(server);
 
@@ -173,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements
                     String jsonPostsResponse = NetworkUtils
                             .getResponseFromHttpUrl(postsUrl);
 
-                    String[] simpleJsonPostsData = ProxyPostsJsonUtils
+                    Post[] simpleJsonPostsData = ProxyPostsJsonUtils
                             .getSimplePostsStringsFromJson(jsonPostsResponse);
 
                     return simpleJsonPostsData;
@@ -185,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void deliverResult(@Nullable String[] data) {
+            public void deliverResult(@Nullable Post[] data) {
                 mPostsData = data;
                 super.deliverResult(data);
             }
@@ -193,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<String[]> loader, String[] data) {
+    public void onLoadFinished(@NonNull Loader<Post[]> loader, Post[] data) {
         mLoadingProgressBar.setVisibility(View.INVISIBLE);
         mPostAdapter.setPostsData(data);
         if (null == data) {
@@ -204,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<String[]> loader) {
+    public void onLoaderReset(@NonNull Loader<Post[]> loader) {
 
     }
 
