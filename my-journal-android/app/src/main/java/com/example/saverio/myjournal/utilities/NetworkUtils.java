@@ -42,6 +42,27 @@ public final class NetworkUtils {
     }
 
     /**
+     * Builds the URL used to talk to the proxy server
+     *
+     * @return The URL to use to post from proxy server.
+     */
+    public static URL buildPostUrl(String server, String id) {
+        Uri builtUri = Uri.parse(server + POSTS_PATH + '/' + id).buildUpon()
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built URI " + url);
+
+        return url;
+    }
+
+    /**
      * This method returns the entire result from the HTTP response.
      *
      * @param url The URL to fetch the HTTP response from.

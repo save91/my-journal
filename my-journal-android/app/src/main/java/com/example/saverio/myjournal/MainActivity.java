@@ -127,12 +127,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClick(String title) {
+    public void onClick(String id) {
         Context context = this;
         Class destinationActivity = DetailActivity.class;
 
         Intent intent = new Intent(context, destinationActivity);
-        intent.putExtra(Intent.EXTRA_TEXT, title);
+        intent.putExtra(Intent.EXTRA_TEXT, id);
 
         startActivity(intent);
     }

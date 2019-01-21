@@ -3,7 +3,9 @@ package com.example.saverio.myjournal.data;
 public class Post {
     private String id;
     private String title;
+    private String body;
     private String thumbnailUrl;
+    private String postThumbnailUrl;
 
 
     public String getId() {
@@ -22,11 +24,28 @@ public class Post {
         this.title = title;
     }
 
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
     public String getThumbnailUrl() {
         return thumbnailUrl;
     }
 
     public void setThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
+    }
+
+
+    public String getPostThumbnailUrl() {
+        return postThumbnailUrl;
+    }
+
+    public void setPostThumbnailUrl(String postThumbnailUrl) {
+        this.postThumbnailUrl = postThumbnailUrl;
     }
 }

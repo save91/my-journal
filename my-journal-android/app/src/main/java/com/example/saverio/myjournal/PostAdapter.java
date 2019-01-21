@@ -43,7 +43,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterVie
 
         @Override
         public void onClick(View view) {
-            mClickHandler.onClick(this.mPostTextView.getText().toString());
+            int position = this.getAdapterPosition();
+            Post post = mPostsData[position];
+            mClickHandler.onClick(post.getId());
         }
     }
 

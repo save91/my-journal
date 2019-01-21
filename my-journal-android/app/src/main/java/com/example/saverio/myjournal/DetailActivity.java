@@ -1,27 +1,58 @@
 package com.example.saverio.myjournal;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-public class DetailActivity extends AppCompatActivity {
+import com.example.saverio.myjournal.data.MyJournalPreferences;
+import com.example.saverio.myjournal.data.Post;
+import com.example.saverio.myjournal.utilities.NetworkUtils;
+import com.example.saverio.myjournal.utilities.ProxyPostsJsonUtils;
+import com.squareup.picasso.Picasso;
+
+import java.net.URL;
+
+public class DetailActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<Post> {
+
+    private static final int FORECAST_LOADER_ID = 23;
+    private static final String KEY_ID = "id";
 
     private TextView mTitleDisplay;
+    private ImageView mPostThunbnail;
+    private WebView mWebView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         mTitleDisplay = findViewById(R.id.tv_title);
+        mPostThunbnail = findViewById(R.id.iv_post_thundbail);
+        mWebView = findViewById(R.id.wv_body);
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-            String title = intent.getStringExtra(Intent.EXTRA_TEXT);
-            mTitleDisplay.setText(title);
+            String id = intent.getStringExtra(Intent.EXTRA_TEXT);
+            int loaderId = FORECAST_LOADER_ID;
+            LoaderManager.LoaderCallbacks<Post> callback = DetailActivity.this;
+            Bundle bundleForLoader = new Bundle();
+            bundleForLoader.putString(KEY_ID, id);
+            getSupportLoaderManager().initLoader(loaderId, bundleForLoader, callback);
         }
     }
 
@@ -59,5 +90,66 @@ public class DetailActivity extends AppCompatActivity {
         sendIntent.setType("text/plain");
 
         startActivity(sendIntent);
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    @NonNull
+    @Override
+    public Loader<Post> onCreateLoader(int i, @Nullable Bundle bundle) {
+        final String id = bundle.getString(KEY_ID);
+        return new AsyncTaskLoader<Post>(this) {
+            Post mPostData = null;
+
+            @Override
+            protected void onStartLoading() {
+                if (mPostData != null) {
+                    deliverResult(mPostData);
+                } else {
+                    forceLoad();
+                }
+            }
+
+            @Override
+            public Post loadInBackground() {
+                String server = MyJournalPreferences.getServer(DetailActivity.this);
+                URL postUrl = NetworkUtils.buildPostUrl(server, id);
+
+                try {
+                    String jsonPostResponse = NetworkUtils
+                            .getResponseFromHttpUrl(postUrl);
+
+                    Post simpleJsonPostData = ProxyPostsJsonUtils
+                            .getSimplePostStringsFromJson(jsonPostResponse);
+
+                    return simpleJsonPostData;
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            public void deliverResult(@Nullable Post data) {
+                mPostData = data;
+                super.deliverResult(data);
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Post> loader, Post post) {
+        mTitleDisplay.setText(post.getTitle());
+        // TODO: load custom css
+        mWebView.loadDataWithBaseURL(null, post.getBody(), "text/html", "UTF-8", null);
+
+        Uri uri = Uri.parse(post.getPostThumbnailUrl());
+        Picasso.with(mPostThunbnail.getContext()).load(uri)
+                .into(mPostThunbnail);
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Post> loader) {
+
     }
 }
