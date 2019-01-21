@@ -3,6 +3,7 @@ package com.example.saverio.myjournal.utilities;
 import android.net.Uri;
 import android.util.Log;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -61,6 +62,9 @@ public final class NetworkUtils {
             } else {
                 return null;
             }
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, e.toString());
+            return null;
         } finally {
             urlConnection.disconnect();
         }
