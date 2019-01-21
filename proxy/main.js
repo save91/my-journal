@@ -58,6 +58,14 @@ app.get('/api/:version/posts', async (req, res) => {
     res.send(toReturn)
 })
 
+app.get('/api/:version/posts/:id', async (req, res) => {
+    const id = req.params['id'];
+    const postsUrl = `${baseUrl}/wp-json/wp/v2/posts/${id}?_embed`;
+    const responseFromWp = await axios.get(postsUrl)
+    const toReturn = parseWordPressPost(responseFromWp.data)
+    res.send(toReturn)
+})
+
 app.listen(PORT, () => {
     console.log(`Server in ascolto sulla porta: ${PORT}`)
 })
