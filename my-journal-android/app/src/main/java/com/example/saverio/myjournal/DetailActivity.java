@@ -143,7 +143,7 @@ public class DetailActivity extends AppCompatActivity implements
         // TODO: load custom css
         mWebView.loadDataWithBaseURL(null, post.getBody(), "text/html", "UTF-8", null);
 
-        Uri uri = Uri.parse(post.getPostThumbnailUrl());
+        Uri uri = Uri.parse(post.getMediumUrl());
         Picasso.with(mPostThunbnail.getContext()).load(uri)
                 .into(mPostThunbnail);
     }

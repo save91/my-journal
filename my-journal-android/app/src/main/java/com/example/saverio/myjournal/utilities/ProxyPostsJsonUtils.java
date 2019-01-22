@@ -74,6 +74,7 @@ public final class ProxyPostsJsonUtils {
         final String OWM_FEATURE_MEDIA = "featured_media";
         final String OWM_THUMBNAIL_URL = "thumbnail_url";
         final String OWM_POST_THUMBNAIL_URL = "post_thumbnail_url";
+        final String OWM_MEDIUM_URL = "medium_url";
 
         String id = jsonObject.getString(OWM_ID);
         String title = jsonObject.getString(OWM_TITLE);
@@ -81,6 +82,7 @@ public final class ProxyPostsJsonUtils {
         JSONObject JSONfeatureMedia = jsonObject.getJSONObject(OWM_FEATURE_MEDIA);
         String thumbnailUrl = JSONfeatureMedia.getString(OWM_THUMBNAIL_URL);
         String postThumbnailUrl = JSONfeatureMedia.optString(OWM_POST_THUMBNAIL_URL);
+        String mediumUrl = JSONfeatureMedia.optString(OWM_MEDIUM_URL);
 
         Post post = new Post();
         post.setId(id);
@@ -88,6 +90,7 @@ public final class ProxyPostsJsonUtils {
         post.setBody(body);
         post.setThumbnailUrl(thumbnailUrl);
         post.setPostThumbnailUrl(postThumbnailUrl);
+        post.setMediumUrl(mediumUrl);
 
         return post;
     }

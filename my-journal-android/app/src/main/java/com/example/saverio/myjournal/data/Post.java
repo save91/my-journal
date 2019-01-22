@@ -6,6 +6,7 @@ public class Post {
     private String body;
     private String thumbnailUrl;
     private String postThumbnailUrl;
+    private String mediumUrl;
 
 
     public String getId() {
@@ -40,12 +41,19 @@ public class Post {
         this.thumbnailUrl = thumbnailUrl;
     }
 
-
     public String getPostThumbnailUrl() {
         return postThumbnailUrl;
     }
 
     public void setPostThumbnailUrl(String postThumbnailUrl) {
         this.postThumbnailUrl = postThumbnailUrl;
+    }
+
+    public String getMediumUrl() {
+        return mediumUrl;
+    }
+
+    public void setMediumUrl(String mediumUrl) {
+        this.mediumUrl = mediumUrl;
     }
 }
