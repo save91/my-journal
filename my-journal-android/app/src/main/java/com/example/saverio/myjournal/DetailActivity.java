@@ -3,14 +3,17 @@ package com.example.saverio.myjournal;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.text.HtmlCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -140,8 +143,9 @@ public class DetailActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(@NonNull Loader<Post> loader, Post post) {
         mTitleDisplay.setText(post.getTitle());
-        // TODO: load custom css
-        mWebView.loadDataWithBaseURL(null, post.getBody(), "text/html", "UTF-8", null);
+
+        String html = "<link rel=\"stylesheet\" href=\"style.css\">" + post.getBody();
+        mWebView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
 
         Uri uri = Uri.parse(post.getMediumUrl());
         Picasso.with(mPostThunbnail.getContext()).load(uri)

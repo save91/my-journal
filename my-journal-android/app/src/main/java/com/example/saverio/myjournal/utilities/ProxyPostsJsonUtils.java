@@ -80,7 +80,7 @@ public final class ProxyPostsJsonUtils {
         String title = jsonObject.getString(OWM_TITLE);
         String body = jsonObject.getString(OWM_BODY);
         JSONObject JSONfeatureMedia = jsonObject.getJSONObject(OWM_FEATURE_MEDIA);
-        String thumbnailUrl = JSONfeatureMedia.getString(OWM_THUMBNAIL_URL);
+        String thumbnailUrl = JSONfeatureMedia.optString(OWM_THUMBNAIL_URL);
         String postThumbnailUrl = JSONfeatureMedia.optString(OWM_POST_THUMBNAIL_URL);
         String mediumUrl = JSONfeatureMedia.optString(OWM_MEDIUM_URL);
 
