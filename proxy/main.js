@@ -30,6 +30,7 @@ const parseWordPressMedia = (wpMedia) => {
         id: wpMedia.id,
         thumbnail_url: _.get(wpMedia, 'media_details.sizes.thumbnail.source_url', undefined),
         post_thumbnail_url: _.get(wpMedia, 'media_details.sizes.post-thumbnail.source_url', undefined),
+        medium_url: _.get(wpMedia, 'media_details.sizes.medium.source_url', undefined),
     }
 }
 
