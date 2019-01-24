@@ -1,6 +1,7 @@
 package com.example.saverio.myjournal.ui.detail;
 
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,6 +23,7 @@ import com.example.saverio.myjournal.R;
 import com.example.saverio.myjournal.SettingsActivity;
 import com.example.saverio.myjournal.data.MyJournalPreferences;
 import com.example.saverio.myjournal.data.Post;
+import com.example.saverio.myjournal.data.database.PostEntry;
 import com.example.saverio.myjournal.utilities.NetworkUtils;
 import com.example.saverio.myjournal.utilities.ProxyPostsJsonUtils;
 import com.squareup.picasso.Picasso;
@@ -31,8 +34,10 @@ public class DetailActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Post> {
 
     private static final int FORECAST_LOADER_ID = 23;
+    private static final String TAG = DetailActivity.class.toString();
     private static final String KEY_ID = "id";
 
+    private DetailActivityViewModel mViewModel;
     private TextView mTitleDisplay;
     private ImageView mPostThunbnail;
     private WebView mWebView;
@@ -41,6 +46,12 @@ public class DetailActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        mViewModel = ViewModelProviders.of(this).get(DetailActivityViewModel.class);
+        mViewModel.getPost().observe(this, postEntry -> {
+            if (postEntry != null) {
+                bindPostToUI(postEntry);
+            }
+        });
         mTitleDisplay = findViewById(R.id.tv_title);
         mPostThunbnail = findViewById(R.id.iv_post_thundbail);
         mWebView = findViewById(R.id.wv_body);
@@ -152,5 +163,9 @@ public class DetailActivity extends AppCompatActivity implements
     @Override
     public void onLoaderReset(@NonNull Loader<Post> loader) {
 
+    }
+
+    private void bindPostToUI(PostEntry postEntry) {
+        Log.d(TAG, "new post " + postEntry.getTitle());
     }
 }
