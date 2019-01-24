@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:launchMode="singleTop"
-            android:name=".MainActivity">
+            android:name=".ui.list.MainActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,11 +23,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetailActivity"
-            android:parentActivityName=".MainActivity">
+            android:name=".ui.detail.DetailActivity"
+            android:parentActivityName=".ui.list.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".ui.list.MainActivity" />
         </activity>
         <activity
             android:name=".SettingsActivity"

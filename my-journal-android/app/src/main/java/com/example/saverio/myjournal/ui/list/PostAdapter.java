@@ -1,4 +1,4 @@
-package com.example.saverio.myjournal;
+package com.example.saverio.myjournal.ui.list;
 
 import android.content.Context;
 import android.net.Uri;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.saverio.myjournal.R;
 import com.example.saverio.myjournal.data.Post;
 import com.squareup.picasso.Picasso;
 
