@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.saverio.myjournal.R;
-import com.example.saverio.myjournal.SettingsActivity;
+import com.example.saverio.myjournal.ui.settings.SettingsActivity;
 import com.example.saverio.myjournal.data.MyJournalPreferences;
 import com.example.saverio.myjournal.data.Post;
 import com.example.saverio.myjournal.data.database.PostEntry;

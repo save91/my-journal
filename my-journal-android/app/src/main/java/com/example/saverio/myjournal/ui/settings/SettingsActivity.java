@@ -1,9 +1,11 @@
-package com.example.saverio.myjournal;
+package com.example.saverio.myjournal.ui.settings;
 
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+
+import com.example.saverio.myjournal.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
