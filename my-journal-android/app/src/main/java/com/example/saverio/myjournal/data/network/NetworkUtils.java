@@ -1,4 +1,4 @@
-package com.example.saverio.myjournal.utilities;
+package com.example.saverio.myjournal.data.network;
 
 import android.net.Uri;
 import android.util.Log;

@@ -1,6 +1,7 @@
 package com.example.saverio.myjournal.ui.list;
 
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,22 +26,20 @@ import com.example.saverio.myjournal.ui.detail.DetailActivity;
 import com.example.saverio.myjournal.R;
 import com.example.saverio.myjournal.ui.settings.SettingsActivity;
 import com.example.saverio.myjournal.data.MyJournalPreferences;
-import com.example.saverio.myjournal.data.Post;
-import com.example.saverio.myjournal.utilities.NetworkUtils;
-import com.example.saverio.myjournal.utilities.ProxyPostsJsonUtils;
+import com.example.saverio.myjournal.data.network.NetworkUtils;
+import com.example.saverio.myjournal.utilities.InjectorUtils;
 
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements
         PostAdapter.PostAdapterOnClickHandler,
-        LoaderManager.LoaderCallbacks<Post[]>,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final int FORECAST_LOADER_ID = 22;
     private RecyclerView mRecyclerView;
     private PostAdapter mPostAdapter;
     private TextView mErrorMessageTextView;
     private ProgressBar mLoadingProgressBar;
+    private MainActivityViewModel mViewModel;
     private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
 
     @Override
@@ -50,11 +49,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mRecyclerView = findViewById(R.id.recyclerview_posts);
         mErrorMessageTextView = findViewById(R.id.tv_error_message);
-        /*
-         * LinearLayoutManager can support HORIZONTAL or VERTICAL orientations. The reverse layout
-         * parameter is useful mostly for HORIZONTAL layouts that should reverse for right to left
-         * languages.
-         */
+
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
@@ -76,30 +71,14 @@ public class MainActivity extends AppCompatActivity implements
         mRecyclerView.setAdapter(mPostAdapter);
         mLoadingProgressBar = findViewById(R.id.pb_loading);
 
-        int loaderId = FORECAST_LOADER_ID;
-
-        /*
-         * From MainActivity, we have implemented the LoaderCallbacks interface with the type of
-         * String array. (implements LoaderCallbacks<Post[]>) The variable callback is passed
-         * to the call to initLoader below. This means that whenever the loaderManager has
-         * something to notify us of, it will do so through this callback.
-         */
-        LoaderManager.LoaderCallbacks<Post[]> callback = MainActivity.this;
-
-        /*
-         * The second parameter of the initLoader method below is a Bundle. Optionally, you can
-         * pass a Bundle to initLoader that you can then access from within the onCreateLoader
-         * callback. In our case, we don't actually use the Bundle, but it's here in case we wanted
-         * to.
-         */
-        Bundle bundleForLoader = null;
-
-        /*
-         * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
-         * created and (if the activity/fragment is currently started) starts the loader. Otherwise
-         * the last created loader is re-used.
-         */
-        getSupportLoaderManager().initLoader(loaderId, bundleForLoader, callback);
+        MainViewModelFactory factory = InjectorUtils.provideMainViewModelFactory(this);
+        mViewModel = ViewModelProviders.of(this, factory).get(MainActivityViewModel.class);
+        mViewModel.getPosts().observe(this, posts -> {
+            if (posts != null) {
+                mPostAdapter.setPostsData(posts);
+                showPostsDataView();
+            }
+        });
 
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
@@ -111,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements
         if (PREFERENCES_HAVE_BEEN_UPDATED == true) {
             mPostAdapter.setPostsData(null);
             invalidateData();
-            getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
             PREFERENCES_HAVE_BEEN_UPDATED = false;
         }
     }
@@ -149,68 +127,6 @@ public class MainActivity extends AppCompatActivity implements
         mErrorMessageTextView.setVisibility(View.VISIBLE);
     }
 
-    @SuppressLint("StaticFieldLeak")
-    @NonNull
-    @Override
-    public Loader<Post[]> onCreateLoader(int i, @Nullable Bundle bundle) {
-        return new AsyncTaskLoader<Post[]>(this) {
-            Post[] mPostsData = null;
-
-            @Override
-            protected void onStartLoading() {
-                showPostsDataView();
-                if (mPostsData != null) {
-                    deliverResult(mPostsData);
-                } else {
-                    mLoadingProgressBar.setVisibility(View.VISIBLE);
-                    forceLoad();
-                }
-            }
-
-            @Override
-            public Post[] loadInBackground() {
-                String server = MyJournalPreferences.getServer(MainActivity.this);
-                URL postsUrl = NetworkUtils.buildPostsUrl(server);
-
-                try {
-                    String jsonPostsResponse = NetworkUtils
-                            .getResponseFromHttpUrl(postsUrl);
-
-                    Post[] simpleJsonPostsData = ProxyPostsJsonUtils
-                            .getSimplePostsStringsFromJson(jsonPostsResponse);
-
-                    return simpleJsonPostsData;
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            @Override
-            public void deliverResult(@Nullable Post[] data) {
-                mPostsData = data;
-                super.deliverResult(data);
-            }
-        };
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader<Post[]> loader, Post[] data) {
-        mLoadingProgressBar.setVisibility(View.INVISIBLE);
-        mPostAdapter.setPostsData(data);
-        if (null == data) {
-            showErrorMessage();
-        } else {
-            showPostsDataView();
-        }
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<Post[]> loader) {
-
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -226,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements
         if (id == R.id.action_refresh) {
             mPostAdapter.setPostsData(null);
             invalidateData();
-            getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
             return true;
         }
 

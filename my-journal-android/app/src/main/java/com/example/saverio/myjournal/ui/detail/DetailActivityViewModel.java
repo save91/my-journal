@@ -1,22 +1,19 @@
 package com.example.saverio.myjournal.ui.detail;
 
-import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.example.saverio.myjournal.data.MyJournalRepository;
 import com.example.saverio.myjournal.data.database.PostEntry;
 
 public class DetailActivityViewModel extends ViewModel {
-    private MutableLiveData<PostEntry> mPost;
+    private LiveData<PostEntry> mPost;
 
-    public DetailActivityViewModel() {
-        mPost = new MutableLiveData<>();
+    public DetailActivityViewModel(MyJournalRepository repository, int id) {
+        mPost = repository.getPostById(id);
     }
 
-    public MutableLiveData<PostEntry> getPost() {
+    public LiveData<PostEntry> getPost() {
         return mPost;
-    }
-
-    public void setPost(PostEntry postEntry) {
-        mPost.postValue(postEntry);
     }
 }

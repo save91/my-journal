@@ -2,6 +2,7 @@ package com.example.saverio.myjournal.ui.list;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,13 +12,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.saverio.myjournal.R;
-import com.example.saverio.myjournal.data.Post;
+import com.example.saverio.myjournal.data.database.PostEntry;
 import com.squareup.picasso.Picasso;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterViewHolder> {
     private final String TAG = "PostAdapter";
 
-    private Post[] mPostsData;
+    private PostEntry[] mPostsData;
     private PostAdapterOnClickHandler mClickHandler;
 
     interface PostAdapterOnClickHandler {
@@ -45,8 +46,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterVie
         @Override
         public void onClick(View view) {
             int position = this.getAdapterPosition();
-            Post post = mPostsData[position];
-            mClickHandler.onClick(post.getId());
+            PostEntry post = mPostsData[position];
+            mClickHandler.onClick(Integer.toString(post.getId()));
         }
     }
 
@@ -78,13 +79,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterVie
      * details for this particular position, using the "position" argument that is conveniently
      * passed into us.
      *
-     * @param PostAdapterViewHolder The ViewHolder which should be updated to represent the
-     *                              contents of the item at the given position in the data set.
      * @param position              The position of the item within the adapter's data set.
      */
     @Override
     public void onBindViewHolder(PostAdapterViewHolder postAdapterViewHolder, int position) {
-        Post post = mPostsData[position];
+        PostEntry post = mPostsData[position];
 
         postAdapterViewHolder.mPostTextView.setText(post.getTitle());
         Uri uri = Uri.parse(post.getThumbnailUrl());
@@ -112,7 +111,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterVie
      *
      * @param postsData The new weather data to be displayed.
      */
-    public void setPostsData(Post[] postsData) {
+    public void setPostsData(PostEntry[] postsData) {
         mPostsData = postsData;
         notifyDataSetChanged();
     }
