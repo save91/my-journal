@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements
         PostAdapter.PostAdapterOnClickHandler,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView mRecyclerView;
     private PostAdapter mPostAdapter;
     private TextView mErrorMessageTextView;
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements
         MainViewModelFactory factory = InjectorUtils.provideMainViewModelFactory(this);
         mViewModel = ViewModelProviders.of(this, factory).get(MainActivityViewModel.class);
         mViewModel.getPosts().observe(this, posts -> {
+            Log.d(TAG, "There are " + posts.length + " posts");
             if (posts != null) {
                 mPostAdapter.setPostsData(posts);
                 showPostsDataView();

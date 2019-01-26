@@ -18,6 +18,6 @@ public class MyJournalIntentService extends IntentService {
         Log.d(TAG, "Intent service started");
         MyJournalNetworkDataSource networkDataSource =
                 InjectorUtils.provideNetworkDataSource(this.getApplicationContext());
-        networkDataSource.fetchPosts("http://10.0.2.2");
+        networkDataSource.fetchPosts("http://10.0.2.2:8080");
     }
 }

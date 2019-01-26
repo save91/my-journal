@@ -2,6 +2,7 @@ package com.example.saverio.myjournal.ui.detail;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,6 +16,7 @@ import com.example.saverio.myjournal.R;
 import com.example.saverio.myjournal.ui.settings.SettingsActivity;
 import com.example.saverio.myjournal.data.database.PostEntry;
 import com.example.saverio.myjournal.utilities.InjectorUtils;
+import com.squareup.picasso.Picasso;
 
 public class DetailActivity extends AppCompatActivity {
     private static final String TAG = DetailActivity.class.getSimpleName();
@@ -88,5 +90,11 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         mTitleDisplay.setText(postEntry.getTitle());
+        String html = "<link rel=\"stylesheet\" href=\"style.css\">" + postEntry.getBody();
+        mWebView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
+
+        Uri uri = Uri.parse(postEntry.getMediumUrl());
+        Picasso.with(mPostThunbnail.getContext()).load(uri)
+                .into(mPostThunbnail);
     }
 }

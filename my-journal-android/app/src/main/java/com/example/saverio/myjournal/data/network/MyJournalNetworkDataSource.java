@@ -50,9 +50,13 @@ public class MyJournalNetworkDataSource {
     }
 
     public void fetchPosts(String server) {
+        Log.d(TAG, "fetchPosts");
+
         mExecutors.networkIO().execute(() -> {
             try {
                 URL postsRequestUrl = NetworkUtils.buildPostsUrl(server);
+                Log.d(TAG, "postsRequestUrl: " + postsRequestUrl.toString());
+
 
                 String jsonResponse = NetworkUtils.getResponseFromHttpUrl(postsRequestUrl);
 

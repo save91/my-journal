@@ -34,6 +34,9 @@
             android:label="@string/title_activity_settings">
 
         </activity>
+        <service
+            android:name=".data.network.MyJournalIntentService"
+            android:exported="false" />
     </application>
 
 </manifest>
