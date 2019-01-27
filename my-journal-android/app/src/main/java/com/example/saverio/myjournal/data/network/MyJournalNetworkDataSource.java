@@ -43,8 +43,9 @@ public class MyJournalNetworkDataSource {
         return mDownloadedPosts;
     }
 
-    public void startFetchWeatherService() {
+    public void startFetchWeatherService(String server) {
         Intent intentToFetch = new Intent(mContext, MyJournalIntentService.class);
+        intentToFetch.putExtra(MyJournalIntentService.EXTRA_SERVER, server);
         mContext.startService(intentToFetch);
         Log.d(TAG, "Service created");
     }

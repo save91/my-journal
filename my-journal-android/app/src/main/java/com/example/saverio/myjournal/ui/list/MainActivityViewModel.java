@@ -7,13 +7,13 @@ import com.example.saverio.myjournal.data.MyJournalRepository;
 import com.example.saverio.myjournal.data.database.PostEntry;
 
 public class MainActivityViewModel extends ViewModel {
-    private LiveData<PostEntry[]> mPosts;
+    private MyJournalRepository mRepository;
 
     public MainActivityViewModel(MyJournalRepository repository) {
-        mPosts = repository.getPosts();
+        mRepository = repository;
     }
 
-    public LiveData<PostEntry[]> getPosts() {
-        return mPosts;
+    public LiveData<PostEntry[]> getPosts(String server) {
+        return mRepository.getPosts(server);
     }
 }

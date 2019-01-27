@@ -17,8 +17,6 @@ public class MyJournalRepository {
     private final MyJournalNetworkDataSource mMyJournalNetworkDataSource;
     private final AppExecutors mExecutors;
 
-    private boolean mInitialized = false;
-
     private MyJournalRepository(
             PostDao postDao,
             MyJournalNetworkDataSource networkDataSource,
@@ -57,20 +55,20 @@ public class MyJournalRepository {
         return mPostDao.getPostById(id);
     }
 
-    public LiveData<PostEntry[]> getPosts() {
-        initializeData();
+    private void invalidateData() {
+        mExecutors.diskIO().execute(() -> mPostDao.deleteAllPost());
+    }
+
+    public LiveData<PostEntry[]> getPosts(String server) {
+        initializeData(server);
         return mPostDao.getPosts();
     }
 
-    private synchronized void initializeData() {
-        if (mInitialized) return;
-        mInitialized = true;
-
-        startFetchWeatherService();
+    private synchronized void initializeData(String server) {
+        invalidateData();
+        startFetchWeatherService(server);
     }
-    private void deleteOldData() { }
-    private boolean isFetchNeeded() { return true; }
-    private void startFetchWeatherService() {
-        mMyJournalNetworkDataSource.startFetchWeatherService();
+    private void startFetchWeatherService(String server) {
+        mMyJournalNetworkDataSource.startFetchWeatherService(server);
     }
 }

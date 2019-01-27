@@ -75,11 +75,14 @@ public class MainActivity extends AppCompatActivity implements
 
         MainViewModelFactory factory = InjectorUtils.provideMainViewModelFactory(this);
         mViewModel = ViewModelProviders.of(this, factory).get(MainActivityViewModel.class);
-        mViewModel.getPosts().observe(this, posts -> {
+        String server = MyJournalPreferences.getServer(MainActivity.this);
+        mViewModel.getPosts(server).observe(this, posts -> {
             Log.d(TAG, "There are " + posts.length + " posts");
-            if (posts != null) {
-                mPostAdapter.setPostsData(posts);
+            mPostAdapter.setPostsData(posts);
+            if (posts.length > 0) {
                 showPostsDataView();
+            } else {
+                showLoading();
             }
         });
 
@@ -91,8 +94,8 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
         if (PREFERENCES_HAVE_BEEN_UPDATED == true) {
-            mPostAdapter.setPostsData(null);
-            invalidateData();
+            String server = MyJournalPreferences.getServer(MainActivity.this);
+            mViewModel.getPosts(server);
             PREFERENCES_HAVE_BEEN_UPDATED = false;
         }
     }
@@ -122,12 +125,20 @@ public class MainActivity extends AppCompatActivity implements
 
     private void showPostsDataView() {
         mErrorMessageTextView.setVisibility(View.INVISIBLE);
+        mLoadingProgressBar.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     private void showErrorMessage() {
         mRecyclerView.setVisibility(View.INVISIBLE);
+        mLoadingProgressBar.setVisibility(View.INVISIBLE);
         mErrorMessageTextView.setVisibility(View.VISIBLE);
+    }
+
+    private void showLoading() {
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mLoadingProgressBar.setVisibility(View.VISIBLE);
+        mErrorMessageTextView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -143,8 +154,8 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-            mPostAdapter.setPostsData(null);
-            invalidateData();
+            String server = MyJournalPreferences.getServer(MainActivity.this);
+            mViewModel.getPosts(server);
             return true;
         }
 
@@ -158,8 +169,5 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    private void invalidateData() {
-        mPostAdapter.setPostsData(null);
-    }
 
 }
