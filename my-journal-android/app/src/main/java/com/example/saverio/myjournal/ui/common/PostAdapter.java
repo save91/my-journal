@@ -1,8 +1,7 @@
-package com.example.saverio.myjournal.ui.list;
+package com.example.saverio.myjournal.ui.common;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +20,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterVie
     private PostEntry[] mPostsData;
     private PostAdapterOnClickHandler mClickHandler;
 
-    interface PostAdapterOnClickHandler {
+    public interface PostAdapterOnClickHandler {
         void onClick(String param);
     }
 

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">My Journal</string>
     <string name="error_message">An error occurred. Please, try again.</string>
+    <string name="related_posts">Altri articoli</string>
 
     <string name="action_share">Share</string>
     <string name="action_settings">Settings</string>

@@ -15,6 +15,9 @@ public interface PostDao {
     @Query("SELECT * FROM post WHERE id = :id")
     LiveData<PostEntry> getPostById(int id);
 
+    @Query("SELECT * FROM post WHERE id != :id LIMIT 3")
+    LiveData<PostEntry[]> getRelatedPosts(int id);
+
     @Query("SELECT * FROM post")
     LiveData<PostEntry[]> getPosts();
 

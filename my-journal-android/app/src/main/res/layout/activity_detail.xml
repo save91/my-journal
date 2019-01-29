@@ -78,6 +78,21 @@
             ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
         </com.google.android.gms.ads.AdView>
 
+        <TextView
+            style="@style/TextAppearance.AppCompat.Large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/related_posts"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textSize="22sp"  />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_posts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
 
     </LinearLayout>
 </ScrollView>

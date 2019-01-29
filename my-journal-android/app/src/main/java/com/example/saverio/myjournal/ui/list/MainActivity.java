@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.saverio.myjournal.ui.common.PostAdapter;
 import com.example.saverio.myjournal.ui.detail.DetailActivity;
 import com.example.saverio.myjournal.R;
 import com.example.saverio.myjournal.ui.settings.SettingsActivity;

@@ -55,6 +55,10 @@ public class MyJournalRepository {
         return mPostDao.getPostById(id);
     }
 
+    public LiveData<PostEntry[]> getRelatedPosts(int id) {
+        return mPostDao.getRelatedPosts(id);
+    }
+
     private void invalidateData() {
         mExecutors.diskIO().execute(() -> mPostDao.deleteAllPost());
     }

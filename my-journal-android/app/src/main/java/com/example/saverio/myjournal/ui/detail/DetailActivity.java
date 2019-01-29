@@ -1,10 +1,13 @@
 package com.example.saverio.myjournal.ui.detail;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.saverio.myjournal.R;
+import com.example.saverio.myjournal.ui.common.PostAdapter;
 import com.example.saverio.myjournal.ui.settings.SettingsActivity;
 import com.example.saverio.myjournal.data.database.PostEntry;
 import com.example.saverio.myjournal.utilities.InjectorUtils;
@@ -23,7 +27,8 @@ import com.squareup.picasso.Picasso;
 
 import tv.teads.sdk.android.InReadAdView;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements
+        PostAdapter.PostAdapterOnClickHandler {
     private static final String TAG = DetailActivity.class.getSimpleName();
 
     private DetailActivityViewModel mViewModel;
@@ -34,6 +39,8 @@ public class DetailActivity extends AppCompatActivity {
     private InReadAdView mTeadsAdView;
     private AdView mAdView;
     private AdView mAdView2;
+    private RecyclerView mRecyclerView;
+    private PostAdapter mPostAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +65,14 @@ public class DetailActivity extends AppCompatActivity {
         AdRequest adRequest2 = new AdRequest.Builder().build();
         mAdView2.loadAd(adRequest2);
 
+        mRecyclerView = findViewById(R.id.recyclerview_posts);
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+        mPostAdapter = new PostAdapter(this);
+        mRecyclerView.setAdapter(mPostAdapter);
+
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
             String id = intent.getStringExtra(Intent.EXTRA_TEXT);
@@ -66,6 +81,12 @@ public class DetailActivity extends AppCompatActivity {
             mViewModel.getPost().observe(this, postEntry -> {
                 if (postEntry != null) {
                     bindPostToUI(postEntry);
+                }
+            });
+
+            mViewModel.getRelatedPosts().observe(this, posts -> {
+                if (posts != null) {
+                    mPostAdapter.setPostsData(posts);
                 }
             });
         }
@@ -126,5 +147,16 @@ public class DetailActivity extends AppCompatActivity {
         Uri uri = Uri.parse(postEntry.getMediumUrl());
         Picasso.with(mPostThunbnail.getContext()).load(uri)
                 .into(mPostThunbnail);
+    }
+
+    @Override
+    public void onClick(String id) {
+        Context context = this;
+        Class destinationActivity = DetailActivity.class;
+
+        Intent intent = new Intent(context, destinationActivity);
+        intent.putExtra(Intent.EXTRA_TEXT, id);
+
+        startActivity(intent);
     }
 }
