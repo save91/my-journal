@@ -18,6 +18,8 @@ import com.example.saverio.myjournal.data.database.PostEntry;
 import com.example.saverio.myjournal.utilities.InjectorUtils;
 import com.squareup.picasso.Picasso;
 
+import tv.teads.sdk.android.InReadAdView;
+
 public class DetailActivity extends AppCompatActivity {
     private static final String TAG = DetailActivity.class.getSimpleName();
 
@@ -25,6 +27,8 @@ public class DetailActivity extends AppCompatActivity {
     private TextView mTitleDisplay;
     private ImageView mPostThunbnail;
     private WebView mWebView;
+    private WebView mWebView2;
+    private InReadAdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,9 @@ public class DetailActivity extends AppCompatActivity {
         mTitleDisplay = findViewById(R.id.tv_title);
         mPostThunbnail = findViewById(R.id.iv_post_thundbail);
         mWebView = findViewById(R.id.wv_body);
+        mWebView2 = findViewById(R.id.wv_body2);
+        mAdView = findViewById(R.id.teads_ad_view);
+        mAdView.load();
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
@@ -46,6 +53,12 @@ public class DetailActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        mAdView.clean();
+        super.onDestroy();
     }
 
     @Override
@@ -92,6 +105,7 @@ public class DetailActivity extends AppCompatActivity {
         mTitleDisplay.setText(postEntry.getTitle());
         String html = "<link rel=\"stylesheet\" href=\"style.css\">" + postEntry.getBody();
         mWebView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
+        mWebView2.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
 
         Uri uri = Uri.parse(postEntry.getMediumUrl());
         Picasso.with(mPostThunbnail.getContext()).load(uri)
