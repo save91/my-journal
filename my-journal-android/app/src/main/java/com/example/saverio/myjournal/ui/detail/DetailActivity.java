@@ -16,6 +16,9 @@ import com.example.saverio.myjournal.R;
 import com.example.saverio.myjournal.ui.settings.SettingsActivity;
 import com.example.saverio.myjournal.data.database.PostEntry;
 import com.example.saverio.myjournal.utilities.InjectorUtils;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.squareup.picasso.Picasso;
 
 import tv.teads.sdk.android.InReadAdView;
@@ -28,7 +31,9 @@ public class DetailActivity extends AppCompatActivity {
     private ImageView mPostThunbnail;
     private WebView mWebView;
     private WebView mWebView2;
-    private InReadAdView mAdView;
+    private InReadAdView mTeadsAdView;
+    private AdView mAdView;
+    private AdView mAdView2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +44,19 @@ public class DetailActivity extends AppCompatActivity {
         mPostThunbnail = findViewById(R.id.iv_post_thundbail);
         mWebView = findViewById(R.id.wv_body);
         mWebView2 = findViewById(R.id.wv_body2);
-        mAdView = findViewById(R.id.teads_ad_view);
-        mAdView.load();
+
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+
+        mTeadsAdView = findViewById(R.id.teads_ad_view);
+        mTeadsAdView.load();
+
+        mAdView = findViewById(R.id.ad_view);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        mAdView2 = findViewById(R.id.ad_view2);
+        AdRequest adRequest2 = new AdRequest.Builder().build();
+        mAdView2.loadAd(adRequest2);
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
@@ -57,7 +73,7 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        mAdView.clean();
+        mTeadsAdView.clean();
         super.onDestroy();
     }
 

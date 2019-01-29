@@ -1,15 +1,9 @@
 package com.example.saverio.myjournal.ui.list;
 
-import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
@@ -27,10 +21,7 @@ import com.example.saverio.myjournal.ui.detail.DetailActivity;
 import com.example.saverio.myjournal.R;
 import com.example.saverio.myjournal.ui.settings.SettingsActivity;
 import com.example.saverio.myjournal.data.MyJournalPreferences;
-import com.example.saverio.myjournal.data.network.NetworkUtils;
 import com.example.saverio.myjournal.utilities.InjectorUtils;
-
-import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements
         PostAdapter.PostAdapterOnClickHandler,
