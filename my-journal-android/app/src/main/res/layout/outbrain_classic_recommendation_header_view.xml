@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout android:id="@+id/drawer_header_wrapper"
+    android:layout_height="35dp"
+    android:layout_width="match_parent"
+    android:background="#ffffff"
+    android:layout_marginRight="20dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginBottom="2dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.outbrain.OBSDK.Viewability.OBTextView
+        android:id="@+id/widget_title_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recommended_to_you"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:layout_alignBottom="@+id/recommended_by_wrapper"
+        android:textColor="@color/outbrain_orange"/>
+
+    <FrameLayout android:id="@+id/recommended_by_wrapper"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:background="#00ffffff"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true">
+
+        <ImageView
+            android:id="@+id/recommended_by_image"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:scaleType="fitEnd"
+            android:src="@drawable/outbrain_logo" />
+    </FrameLayout>
+
+</RelativeLayout>
+

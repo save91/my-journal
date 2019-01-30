@@ -3,4 +3,11 @@
     <color name="colorPrimary">#F26851</color>
     <color name="colorPrimaryDark">#7F3C2D</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="outbrain_orange">#D81B60</color>
+    <color name="outbrain_white_color">#FFFFFF</color>
+    <color name="outbrain_classic_recommendation_background">#EAEAEA</color>
+    <color name="outbrain_title_color">#000000</color>
+    <color name="outbrain_publisher_color">#C9C9C9</color>
+
 </resources>

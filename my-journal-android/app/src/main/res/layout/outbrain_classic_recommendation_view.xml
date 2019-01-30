@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/outbrain_classic_recommendation_view_container"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
+
+    <LinearLayout android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/outbrain_white_color"
+        android:clickable="false">
+
+        <LinearLayout android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="5dp"
+            android:padding="10dp"
+            android:background="@color/outbrain_classic_recommendation_background"
+            android:clickable="false">
+
+            <FrameLayout
+                android:id="@+id/rec_obimage_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <ImageView android:id="@+id/rec_image_view"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:clickable="false" />
+
+                <ImageView
+                    android:id="@+id/outbrain_rec_disclosure_image_view"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:paddingTop="2.5dp"
+                    android:paddingRight="2.5dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="5dp"
+                    android:layout_gravity="top|right"/>
+            </FrameLayout>
+
+
+
+            <LinearLayout android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:clickable="false">
+
+                <TextView android:id="@+id/outbrain_layouts_title_text_label"
+                    style="@style/LayoutsDemoTitleTextView"
+                    android:clickable="false"/>
+
+                <TextView android:id="@+id/outbrain_layouts_author_text_label"
+                    style="@style/LayoutsDemoAuthorTextView"
+                    android:clickable="false"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

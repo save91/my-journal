@@ -22,6 +22,16 @@ allprojects {
         maven {
             url  "http://dl.bintray.com/teads/TeadsSDK-android"
         }
+        maven {
+            url 'https://dl.bintray.com/outbrainmobile/obsdk'
+            credentials {
+                username = "OutbrainPublishers"
+                password = "adb1c1ae22255101ec2cf56f435a85879a349e5c"
+            }
+        }
+        maven {
+            url "https://maven.google.com"
+        }
     }
 }
 

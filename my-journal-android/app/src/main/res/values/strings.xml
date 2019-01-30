@@ -3,6 +3,10 @@
     <string name="error_message">An error occurred. Please, try again.</string>
     <string name="related_posts">Altri articoli</string>
 
+    <string name="partner_key">AndroidSampleApp2014</string>
+    <string name="recommended_to_you">Recommended to you</string>
+    <string name="outbrain_source_name">(%1$s)</string>
+
     <string name="action_share">Share</string>
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
