@@ -37,12 +37,19 @@ public class DetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-            String id = intent.getStringExtra(Intent.EXTRA_TEXT);
-            DetailViewModelFactory factory = InjectorUtils.provideDetailViewModelFactory(this, Integer.parseInt(id));
+            int id;
+            try {
+                id =  Integer.parseInt(intent.getStringExtra(Intent.EXTRA_TEXT));
+            } catch (Exception e) {
+                id = 0;
+            }
+            DetailViewModelFactory factory = InjectorUtils.provideDetailViewModelFactory(this, id);
             mViewModel = ViewModelProviders.of(this, factory).get(DetailActivityViewModel.class);
             mViewModel.getPost().observe(this, postEntry -> {
                 if (postEntry != null) {
                     bindPostToUI(postEntry);
+                } else {
+                    showErrorMessage();
                 }
             });
         }
@@ -96,5 +103,9 @@ public class DetailActivity extends AppCompatActivity {
         Uri uri = Uri.parse(postEntry.getMediumUrl());
         Picasso.with(mPostThunbnail.getContext()).load(uri)
                 .into(mPostThunbnail);
+    }
+
+    private void showErrorMessage() {
+        mTitleDisplay.setText(R.string.post_not_found);
     }
 }

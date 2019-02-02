@@ -13,4 +13,7 @@
     <string name="desc_post_thundbail">Post thundbail</string>
 
     <string name="title_activity_settings">Settings</string>
+
+    <string name="post_not_found">Post not found</string>
+
 </resources>

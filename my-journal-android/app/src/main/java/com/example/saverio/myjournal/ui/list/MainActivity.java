@@ -86,8 +86,17 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        processExtraData();
+
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        processExtraData();
     }
 
     @Override
@@ -114,6 +123,10 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(String id) {
+        openPost(id);
+    }
+
+    private void openPost(String id) {
         Context context = this;
         Class destinationActivity = DetailActivity.class;
 
@@ -169,5 +182,12 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    private void processExtraData() {
+        Bundle extras = getIntent().getExtras();
+        if (extras != null && extras.containsKey("id")) {
+            String id = extras.getString("id");
+            openPost(id);
+        }
+    }
 
 }
