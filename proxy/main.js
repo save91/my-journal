@@ -1,10 +1,18 @@
 const express = require('express')
 const axios = require('axios')
 const he = require('he')
+const firebaseAdmin = require('firebase-admin')
 const environment = require('./environment')
 const _ = require('lodash')
 const PORT = 8080
 const GTM = '000Z'
+
+const serviceAccount = require('./myjournal-firebase.json')
+
+firebaseAdmin.initializeApp({
+    credential: firebaseAdmin.credential.cert(serviceAccount),
+    databaseURL: "https://myjournal-1e44c.firebaseio.com"
+})
 
 const app = express()
 const { serverAddress, serverPort, serverProtocol } = environment
@@ -65,6 +73,37 @@ app.get('/api/:version/posts/:id', async (req, res) => {
     const responseFromWp = await axios.get(postsUrl)
     const toReturn = parseWordPressPost(responseFromWp.data)
     res.send(toReturn)
+})
+
+app.get('/api/:version/push', async (req, res) => {
+    const dryRun = false
+    const postsUrl = `${baseUrl}/wp-json/wp/v2/posts?_embed`
+    const message = {
+        android: {
+            ttl: 3600 * 1000, // 1 hour in milliseconds
+            priority: 'normal',
+            notification: {
+              title: 'News!',
+              body: ''
+            }
+        },
+        topic: "news"
+    }
+    try {
+        const responseFromWp = await axios.get(postsUrl)
+        const posts = responseFromWp.data.map(post => parseWordPressPost(post))
+        const post = posts[0]
+        message.android.notification.body = post.title
+        message.android.notification.icon = post.featured_media.thumbnail_url
+        message.data = {
+            id: post.id + ""
+        }
+        const response = await firebaseAdmin.messaging().send(message, dryRun)
+        res.status(200).send('success')
+    } catch(error) {
+        console.log("Error: ", error)
+        res.status(500).send('error')
+    }
 })
 
 app.listen(PORT, () => {
