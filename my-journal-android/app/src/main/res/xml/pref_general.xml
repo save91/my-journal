@@ -9,4 +9,11 @@
         android:singleLine="true"
         app:iconSpaceReserved="false"
         android:title="@string/pref_server_label" />
+    <SwitchPreference
+        android:defaultValue="@bool/news_message_subscription"
+        app:iconSpaceReserved="false"
+        android:key="@string/message_subscription_key"
+        android:summaryOff="@string/message_subscription_off"
+        android:summaryOn="@string/message_subscription_on"
+        android:title="@string/message_subscription_title" />
 </PreferenceScreen>

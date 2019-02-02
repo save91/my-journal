@@ -16,4 +16,10 @@
 
     <string name="post_not_found">Post not found</string>
 
+    <string name="message_subscription_key" translatable="false">news</string>
+    <string name="message_subscription_title">News subscription</string>
+    <string name="message_subscription_on">On</string>
+    <string name="message_subscription_off">Off</string>
+
+
 </resources>
