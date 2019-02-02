@@ -7,7 +7,7 @@ const PORT = 8080
 const GTM = '000Z'
 
 const app = express()
-const { serverAddress, serverPort, serverProtocol } = environment;
+const { serverAddress, serverPort, serverProtocol } = environment
 
 const baseUrl = `${serverProtocol}://${serverAddress}`
 if (serverPort) {
@@ -35,8 +35,8 @@ const parseWordPressMedia = (wpMedia) => {
 }
 
 const parseWordPressPost = (wpPost) => {
-    const data = new Date(`${wpPost.date_gmt}.${GTM}`);
-    const modified = new Date(`${wpPost.modified_gmt}.${GTM}`);
+    const data = new Date(`${wpPost.date_gmt}.${GTM}`)
+    const modified = new Date(`${wpPost.modified_gmt}.${GTM}`)
 
     return {
         id: wpPost.id,
@@ -53,15 +53,15 @@ const parseWordPressPost = (wpPost) => {
 }
 
 app.get('/api/:version/posts', async (req, res) => {
-    const postsUrl = `${baseUrl}/wp-json/wp/v2/posts?_embed`;
+    const postsUrl = `${baseUrl}/wp-json/wp/v2/posts?_embed`
     const responseFromWp = await axios.get(postsUrl)
     const toReturn = responseFromWp.data.map(post => parseWordPressPost(post))
     res.send(toReturn)
 })
 
 app.get('/api/:version/posts/:id', async (req, res) => {
-    const id = req.params['id'];
-    const postsUrl = `${baseUrl}/wp-json/wp/v2/posts/${id}?_embed`;
+    const id = req.params['id']
+    const postsUrl = `${baseUrl}/wp-json/wp/v2/posts/${id}?_embed`
     const responseFromWp = await axios.get(postsUrl)
     const toReturn = parseWordPressPost(responseFromWp.data)
     res.send(toReturn)
