@@ -4,6 +4,8 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
@@ -33,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements
     private TextView mErrorMessageTextView;
     private ProgressBar mLoadingProgressBar;
     private MainActivityViewModel mViewModel;
+    private SwipeRefreshLayout mSwipe;
+    private Boolean mLoading;
     private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
 
     @Override
@@ -42,6 +46,14 @@ public class MainActivity extends AppCompatActivity implements
 
         mRecyclerView = findViewById(R.id.recyclerview_posts);
         mErrorMessageTextView = findViewById(R.id.tv_error_message);
+        mSwipe = findViewById(R.id.swipe);
+        mSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                String server = MyJournalPreferences.getServer(MainActivity.this);
+                mViewModel.getPosts(server);
+            }
+        });
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -53,6 +65,22 @@ public class MainActivity extends AppCompatActivity implements
          * change the child layout size in the RecyclerView
          */
         mRecyclerView.setHasFixedSize(true);
+
+        mRecyclerView.setOnScrollListener(
+                new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        int totalItemCount = layoutManager.getItemCount();
+                        int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+
+                        if (!mLoading && totalItemCount <= (lastVisibleItem + 3)) {
+                            String server = MyJournalPreferences.getServer(MainActivity.this);
+                            mViewModel.getMorePosts(server);
+                        }
+                    }
+                }
+        );
 
         /*
          * The PostAdapter is responsible for linking our post data with the Views that
@@ -78,14 +106,13 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         mViewModel.isLoadingPosts().observe(this, loading -> {
-            if (loading) {
-                mLoadingProgressBar.setVisibility(View.VISIBLE);
-            } else {
-                mLoadingProgressBar.setVisibility(View.INVISIBLE);
-            }
+            if (loading == null) return;
+            mLoading = loading;
+            mSwipe.setRefreshing(mLoading);
         });
 
         mViewModel.onError().observe(this, error -> {
+            if (error == null) return;
             if (error) {
                 mErrorMessageTextView.setVisibility(View.VISIBLE);
             } else {
@@ -109,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        if (PREFERENCES_HAVE_BEEN_UPDATED == true) {
+        if (PREFERENCES_HAVE_BEEN_UPDATED) {
             String server = MyJournalPreferences.getServer(MainActivity.this);
             mViewModel.getPosts(server);
             PREFERENCES_HAVE_BEEN_UPDATED = false;

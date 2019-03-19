@@ -12,6 +12,7 @@ public class ProxyPostsJsonParser {
     private static final String OWM_ID = "id";
     private static final String OWM_TITLE = "title";
     private static final String OWM_BODY = "body";
+    private static final String OWM_DATE = "date";
     private static final String OWM_FEATURE_MEDIA = "featured_media";
     private static final String OWM_THUMBNAIL_URL = "thumbnail_url";
     private static final String OWM_POST_THUMBNAIL_URL = "post_thumbnail_url";
@@ -38,6 +39,7 @@ public class ProxyPostsJsonParser {
         String id = jsonObject.getString(OWM_ID);
         String title = jsonObject.getString(OWM_TITLE);
         String body = jsonObject.getString(OWM_BODY);
+        int date = jsonObject.getInt(OWM_DATE);
         JSONObject JSONfeatureMedia = jsonObject.getJSONObject(OWM_FEATURE_MEDIA);
         String thumbnailUrl = JSONfeatureMedia.optString(OWM_THUMBNAIL_URL);
         String postThumbnailUrl = JSONfeatureMedia.optString(OWM_POST_THUMBNAIL_URL);
@@ -47,6 +49,7 @@ public class ProxyPostsJsonParser {
                 Integer.parseInt(id),
                 title,
                 body,
+                date,
                 thumbnailUrl,
                 postThumbnailUrl,
                 mediumUrl

@@ -15,7 +15,7 @@ public interface PostDao {
     @Query("SELECT * FROM post WHERE id = :id")
     LiveData<PostEntry> getPostById(int id);
 
-    @Query("SELECT * FROM post")
+    @Query("SELECT * FROM post ORDER BY date DESC")
     LiveData<PostEntry[]> getPosts();
 
     @Query("DELETE FROM post")

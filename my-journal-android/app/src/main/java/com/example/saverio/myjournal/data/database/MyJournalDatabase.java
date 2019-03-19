@@ -5,7 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {PostEntry.class}, version = 1, exportSchema = false)
+@Database(entities = {PostEntry.class}, version = 2, exportSchema = false)
 public abstract class MyJournalDatabase extends RoomDatabase {
     public abstract PostDao postDao();
 
@@ -18,7 +18,9 @@ public abstract class MyJournalDatabase extends RoomDatabase {
             synchronized (LOCK) {
                 if (sInstance == null) {
                     sInstance = Room.databaseBuilder(context.getApplicationContext(),
-                            MyJournalDatabase.class, MyJournalDatabase.DATABASE_NAME).build();
+                            MyJournalDatabase.class, MyJournalDatabase.DATABASE_NAME)
+                                .fallbackToDestructiveMigration()
+                                .build();
                 }
             }
         }

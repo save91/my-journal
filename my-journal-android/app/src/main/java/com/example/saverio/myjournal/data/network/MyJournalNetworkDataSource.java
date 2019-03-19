@@ -55,21 +55,22 @@ public class MyJournalNetworkDataSource {
         return mOnError;
     }
 
-    public void startFetchPostsService(String server) {
+    public void startFetchPostsService(String server, int page) {
         Intent intentToFetch = new Intent(mContext, MyJournalIntentService.class);
         intentToFetch.putExtra(MyJournalIntentService.EXTRA_SERVER, server);
+        intentToFetch.putExtra(MyJournalIntentService.EXTRA_PAGE, page);
         mContext.startService(intentToFetch);
         Log.d(TAG, "Service created");
     }
 
-    public void fetchPosts(String server) {
+    public void fetchPosts(String server, int page) {
         Log.d(TAG, "fetchPosts");
         mIsLoadingPosts.postValue(true);
         mOnError.postValue(false);
 
         mExecutors.networkIO().execute(() -> {
             try {
-                URL postsRequestUrl = NetworkUtils.buildPostsUrl(server);
+                URL postsRequestUrl = NetworkUtils.buildPostsUrl(server, page);
                 Log.d(TAG, "postsRequestUrl: " + postsRequestUrl.toString());
 
 

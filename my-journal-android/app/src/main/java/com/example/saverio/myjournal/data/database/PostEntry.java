@@ -10,6 +10,7 @@ public class PostEntry {
     private int id;
     private String title;
     private String body;
+    private int date;
     private String thumbnailUrl;
     private String postThumbnailUrl;
     private String mediumUrl;
@@ -18,6 +19,7 @@ public class PostEntry {
             int id,
             String title,
             String body,
+            int date,
             String thumbnailUrl,
             String postThumbnailUrl,
             String mediumUrl
@@ -25,6 +27,7 @@ public class PostEntry {
         this.id = id;
         this.title = title;
         this.body = body;
+        this.date = date;
         this.thumbnailUrl = thumbnailUrl;
         this.postThumbnailUrl = postThumbnailUrl;
         this.mediumUrl = mediumUrl;
@@ -40,6 +43,10 @@ public class PostEntry {
 
     public String getBody() {
         return body;
+    }
+
+    public int getDate() {
+        return date;
     }
 
     public String getThumbnailUrl() {

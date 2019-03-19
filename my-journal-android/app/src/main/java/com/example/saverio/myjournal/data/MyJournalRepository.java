@@ -1,7 +1,6 @@
 package com.example.saverio.myjournal.data;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
 import com.example.saverio.myjournal.AppExecutors;
@@ -13,6 +12,7 @@ public class MyJournalRepository {
     private static final String TAG = MyJournalRepository.class.getSimpleName();
 
     private static final Object LOCK = new Object();
+    private static int mCurrentPage;
     private static MyJournalRepository sInstance;
     private final PostDao mPostDao;
     private final MyJournalNetworkDataSource mMyJournalNetworkDataSource;
@@ -65,6 +65,11 @@ public class MyJournalRepository {
         return mPostDao.getPosts();
     }
 
+    public synchronized void getMorePosts(String server) {
+        mCurrentPage += 1;
+        startFetchPostsService(server, mCurrentPage);
+    }
+
     public LiveData<Boolean> isLoadingPosts() {
         return mMyJournalNetworkDataSource.isLoadingPosts();
     }
@@ -75,9 +80,10 @@ public class MyJournalRepository {
 
     private synchronized void initializeData(String server) {
         invalidateData();
-        startFetchWeatherService(server);
+        mCurrentPage = 1;
+        startFetchPostsService(server, mCurrentPage);
     }
-    private void startFetchWeatherService(String server) {
-        mMyJournalNetworkDataSource.startFetchPostsService(server);
+    private void startFetchPostsService(String server, int page) {
+        mMyJournalNetworkDataSource.startFetchPostsService(server, page);
     }
 }

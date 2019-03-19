@@ -1,10 +1,12 @@
 const express = require('express')
 const axios = require('axios')
 const he = require('he')
+const sleep = require('./utils/sleep')
 const firebaseAdmin = require('firebase-admin')
 const environment = require('./environment')
 const _ = require('lodash')
 const PORT = 8080
+const SLEEP_TIME = 3000
 const GTM = '000Z'
 
 const serviceAccount = require('./myjournal-firebase.json')
@@ -61,9 +63,11 @@ const parseWordPressPost = (wpPost) => {
 }
 
 app.get('/api/:version/posts', async (req, res) => {
-    const postsUrl = `${baseUrl}/wp-json/wp/v2/posts?_embed`
+    const page = req.query.page || 1
+    const postsUrl = `${baseUrl}/wp-json/wp/v2/posts?_embed&page=${page}&per_page=10`
     const responseFromWp = await axios.get(postsUrl)
     const toReturn = responseFromWp.data.map(post => parseWordPressPost(post))
+    await sleep(SLEEP_TIME);
     res.send(toReturn)
 })
 

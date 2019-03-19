@@ -17,6 +17,10 @@ public class MainActivityViewModel extends ViewModel {
         return mRepository.getPosts(server);
     }
 
+    public void getMorePosts(String server) {
+        mRepository.getMorePosts(server);
+    }
+
     public LiveData<Boolean> isLoadingPosts() {
         return mRepository.isLoadingPosts();
     }

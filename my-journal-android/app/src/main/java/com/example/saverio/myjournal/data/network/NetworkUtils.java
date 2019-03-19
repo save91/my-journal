@@ -25,8 +25,8 @@ public final class NetworkUtils {
      *
      * @return The URL to use to posts from proxy server.
      */
-    public static URL buildPostsUrl(String server) {
-        Uri builtUri = Uri.parse(server + POSTS_PATH).buildUpon()
+    public static URL buildPostsUrl(String server, int page) {
+        Uri builtUri = Uri.parse(server + POSTS_PATH + "?page=" + page).buildUpon()
                 .build();
 
         URL url = null;
