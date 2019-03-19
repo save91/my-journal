@@ -71,9 +71,25 @@ public class MainActivity extends AppCompatActivity implements
             Log.d(TAG, "There are " + posts.length + " posts");
             mPostAdapter.setPostsData(posts);
             if (posts.length > 0) {
-                showPostsDataView();
+                mRecyclerView.setVisibility(View.VISIBLE);
             } else {
-                showLoading();
+                mRecyclerView.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        mViewModel.isLoadingPosts().observe(this, loading -> {
+            if (loading) {
+                mLoadingProgressBar.setVisibility(View.VISIBLE);
+            } else {
+                mLoadingProgressBar.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        mViewModel.onError().observe(this, error -> {
+            if (error) {
+                mErrorMessageTextView.setVisibility(View.VISIBLE);
+            } else {
+                mErrorMessageTextView.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -125,24 +141,6 @@ public class MainActivity extends AppCompatActivity implements
         intent.putExtra(Intent.EXTRA_TEXT, id);
 
         startActivity(intent);
-    }
-
-    private void showPostsDataView() {
-        mErrorMessageTextView.setVisibility(View.INVISIBLE);
-        mLoadingProgressBar.setVisibility(View.INVISIBLE);
-        mRecyclerView.setVisibility(View.VISIBLE);
-    }
-
-    private void showErrorMessage() {
-        mRecyclerView.setVisibility(View.INVISIBLE);
-        mLoadingProgressBar.setVisibility(View.INVISIBLE);
-        mErrorMessageTextView.setVisibility(View.VISIBLE);
-    }
-
-    private void showLoading() {
-        mRecyclerView.setVisibility(View.INVISIBLE);
-        mLoadingProgressBar.setVisibility(View.VISIBLE);
-        mErrorMessageTextView.setVisibility(View.INVISIBLE);
     }
 
     @Override

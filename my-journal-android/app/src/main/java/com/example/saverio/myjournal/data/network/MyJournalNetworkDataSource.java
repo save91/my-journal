@@ -19,12 +19,16 @@ public class MyJournalNetworkDataSource {
     private final Context mContext;
 
     private final MutableLiveData<PostEntry[]> mDownloadedPosts;
+    private final MutableLiveData<Boolean> mIsLoadingPosts;
+    private final MutableLiveData<Boolean> mOnError;
     private final AppExecutors mExecutors;
 
     private MyJournalNetworkDataSource(Context context, AppExecutors executors) {
         mContext = context;
         mExecutors = executors;
         mDownloadedPosts = new MutableLiveData<>();
+        mIsLoadingPosts = new MutableLiveData<>();
+        mOnError = new MutableLiveData<>();
     }
 
     public static MyJournalNetworkDataSource getInstance(Context context, AppExecutors executors) {
@@ -43,7 +47,15 @@ public class MyJournalNetworkDataSource {
         return mDownloadedPosts;
     }
 
-    public void startFetchWeatherService(String server) {
+    public LiveData<Boolean> isLoadingPosts() {
+        return mIsLoadingPosts;
+    }
+
+    public LiveData<Boolean> onError() {
+        return mOnError;
+    }
+
+    public void startFetchPostsService(String server) {
         Intent intentToFetch = new Intent(mContext, MyJournalIntentService.class);
         intentToFetch.putExtra(MyJournalIntentService.EXTRA_SERVER, server);
         mContext.startService(intentToFetch);
@@ -52,6 +64,8 @@ public class MyJournalNetworkDataSource {
 
     public void fetchPosts(String server) {
         Log.d(TAG, "fetchPosts");
+        mIsLoadingPosts.postValue(true);
+        mOnError.postValue(false);
 
         mExecutors.networkIO().execute(() -> {
             try {
@@ -75,8 +89,10 @@ public class MyJournalNetworkDataSource {
                 }
 
             } catch (Exception e) {
+                mOnError.postValue(true);
                 e.printStackTrace();
             }
+            mIsLoadingPosts.postValue(false);
         });
     }
 }
