@@ -6,7 +6,7 @@ const firebaseAdmin = require('firebase-admin')
 const environment = require('./environment')
 const _ = require('lodash')
 const PORT = 8080
-const SLEEP_TIME = 3000
+const SLEEP_TIME = 0
 const GTM = '000Z'
 
 const serviceAccount = require('./myjournal-firebase.json')

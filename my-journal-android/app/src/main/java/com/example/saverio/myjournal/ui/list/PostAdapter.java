@@ -3,6 +3,7 @@ package com.example.saverio.myjournal.ui.list;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,8 +16,10 @@ import com.example.saverio.myjournal.R;
 import com.example.saverio.myjournal.data.database.PostEntry;
 import com.squareup.picasso.Picasso;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final String TAG = "PostAdapter";
+    private final int POST_VIEW = 0;
+    private final int LOADING_VIEW = 1;
 
     private PostEntry[] mPostsData;
     private PostAdapterOnClickHandler mClickHandler;
@@ -33,8 +36,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterVie
      * Cache of the children views for a forecast list item.
      */
     public class PostAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final TextView mPostTextView;
-        public final ImageView mPostThunbnail;
+        private final TextView mPostTextView;
+        private final ImageView mPostThunbnail;
 
         public PostAdapterViewHolder(View view) {
             super(view);
@@ -52,6 +55,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterVie
     }
 
     /**
+     * Cache of the children views for a forecast list item.
+     */
+    public class LoadingAdapterViewHolder extends RecyclerView.ViewHolder {
+        public LoadingAdapterViewHolder(View view) {
+            super(view);
+        }
+
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == mPostsData.length) {
+            return LOADING_VIEW;
+        }
+
+        return POST_VIEW;
+    }
+
+    /**
      * This gets called when each new ViewHolder is created. This happens when the RecyclerView
      * is laid out. Enough ViewHolders will be created to fill the screen and allow for scrolling.
      *
@@ -62,15 +84,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterVie
      *                  for more details.
      * @return A new PostAdapterViewHolder that holds the View for each list item
      */
+    @NonNull
     @Override
-    public PostAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.post_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
-        return new PostAdapterViewHolder(view);
+        switch (viewType) {
+            case POST_VIEW:
+                int layoutIdForListItem = R.layout.post_list_item;
+                View viewListItem = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
+                return new PostAdapterViewHolder(viewListItem);
+            case LOADING_VIEW:
+            default:
+                int layoutIdForLoading = R.layout.loading_list_item;
+                View view = inflater.inflate(layoutIdForLoading, viewGroup, shouldAttachToParentImmediately);
+                return new LoadingAdapterViewHolder(view);
+        }
     }
 
     /**
@@ -82,14 +113,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterVie
      * @param position              The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(PostAdapterViewHolder postAdapterViewHolder, int position) {
-        PostEntry post = mPostsData[position];
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        switch (viewHolder.getItemViewType()) {
+            case LOADING_VIEW:
+                LoadingAdapterViewHolder loading = (LoadingAdapterViewHolder) viewHolder;
+                break;
+            case POST_VIEW:
+                PostAdapterViewHolder postAdapterViewHolder = (PostAdapterViewHolder) viewHolder;
+                PostEntry post = mPostsData[position];
+                postAdapterViewHolder.mPostTextView.setText(post.getTitle());
+                Uri uri = Uri.parse(post.getThumbnailUrl());
+                Log.d(TAG, "post.getThumbnailUrl(): " + post.getThumbnailUrl());
+                Picasso.with(postAdapterViewHolder.mPostThunbnail.getContext()).load(uri)
+                        .into(postAdapterViewHolder.mPostThunbnail);
+                break;
+        }
 
-        postAdapterViewHolder.mPostTextView.setText(post.getTitle());
-        Uri uri = Uri.parse(post.getThumbnailUrl());
-        Log.d(TAG, "post.getThumbnailUrl(): " + post.getThumbnailUrl());
-        Picasso.with(postAdapterViewHolder.mPostThunbnail.getContext()).load(uri)
-                .into(postAdapterViewHolder.mPostThunbnail);
     }
 
     /**
@@ -101,7 +140,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostAdapterVie
     @Override
     public int getItemCount() {
         if (null == mPostsData) return 0;
-        return mPostsData.length;
+        if (mPostsData.length == 0) return 0;
+        return mPostsData.length + 1;
     }
 
     /**

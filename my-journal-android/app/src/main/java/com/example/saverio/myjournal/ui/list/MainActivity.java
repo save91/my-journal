@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements
     private RecyclerView mRecyclerView;
     private PostAdapter mPostAdapter;
     private TextView mErrorMessageTextView;
-    private ProgressBar mLoadingProgressBar;
     private MainActivityViewModel mViewModel;
     private SwipeRefreshLayout mSwipe;
     private Boolean mLoading;
@@ -90,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements
 
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mRecyclerView.setAdapter(mPostAdapter);
-        mLoadingProgressBar = findViewById(R.id.pb_loading);
 
         MainViewModelFactory factory = InjectorUtils.provideMainViewModelFactory(this);
         mViewModel = ViewModelProviders.of(this, factory).get(MainActivityViewModel.class);
@@ -114,9 +112,11 @@ public class MainActivity extends AppCompatActivity implements
         mViewModel.onError().observe(this, error -> {
             if (error == null) return;
             if (error) {
+                mRecyclerView.setVisibility(View.INVISIBLE);
                 mErrorMessageTextView.setVisibility(View.VISIBLE);
             } else {
                 mErrorMessageTextView.setVisibility(View.INVISIBLE);
+                mRecyclerView.setVisibility(View.VISIBLE);
             }
         });
 
