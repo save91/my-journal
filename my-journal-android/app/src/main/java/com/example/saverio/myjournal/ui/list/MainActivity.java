@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements
          */
         mRecyclerView.setHasFixedSize(true);
 
-        mRecyclerView.setOnScrollListener(
+        mRecyclerView.addOnScrollListener(
                 new RecyclerView.OnScrollListener() {
                     @Override
                     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
