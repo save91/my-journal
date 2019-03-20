@@ -15,7 +15,7 @@
         <ImageView
             android:id="@+id/iv_post_thundbail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="250dp"
             android:layout_marginStart="0dp"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="0dp"
@@ -24,8 +24,7 @@
             android:adjustViewBounds="true"
             android:background="@color/colorPrimary"
             android:contentDescription="@string/desc_post_thundbail"
-            android:minHeight="200dp"
-            android:scaleType="fitStart" />
+            android:scaleType="fitXY" />
 
         <TextView
             android:id="@+id/tv_title"
