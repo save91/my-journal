@@ -15,7 +15,7 @@ const serviceAccount = require('./myjournal-firebase.json')
 
 firebaseAdmin.initializeApp({
     credential: firebaseAdmin.credential.cert(serviceAccount),
-    databaseURL: "https://myjournal-1e44c.firebaseio.com"
+    databaseURL: 'https://myjournal-1e44c.firebaseio.com'
 })
 
 const app = express()
@@ -27,7 +27,7 @@ const errorHandler = (err, req, res, next) => {
     console.error(TAG, err.stack)
     res.status(500)
     res.send({
-        error: "Something went wrong"
+        error: 'Something went wrong'
     })
 }
 
@@ -109,7 +109,7 @@ app.get('/api/:version/push', async (req, res, next) => {
               body: ''
             }
         },
-        topic: "news"
+        topic: 'news'
     }
 
     try {
@@ -119,7 +119,7 @@ app.get('/api/:version/push', async (req, res, next) => {
         message.android.notification.body = post.title
         message.android.notification.icon = post.featured_media.thumbnail_url
         message.data = {
-            id: post.id + ""
+            id: post.id + ''
         }
         await firebaseAdmin.messaging().send(message, dryRun)
 
