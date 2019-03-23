@@ -2,6 +2,7 @@ const express = require('express')
 const axios = require('axios')
 const he = require('he')
 const sleep = require('./utils/sleep')
+const buildBaseUrl = require('./utils/buildBaseUrl')
 const firebaseAdmin = require('firebase-admin')
 const environment = require('./environment')
 const _ = require('lodash')
@@ -20,10 +21,7 @@ firebaseAdmin.initializeApp({
 const app = express()
 const { serverAddress, serverPort, serverProtocol } = environment
 
-const baseUrl = `${serverProtocol}://${serverAddress}`
-if (serverPort) {
-    baseUrl.concat(':', serverPort)
-}
+const baseUrl = buildBaseUrl(environment)
 
 const errorHandler = (err, req, res, next) => {
     console.error(TAG, err.stack)
