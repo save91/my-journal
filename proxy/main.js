@@ -8,6 +8,7 @@ const _ = require('lodash')
 const PORT = 8080
 const SLEEP_TIME = 0
 const GTM = '000Z'
+const TAG = 'main.js'
 
 const serviceAccount = require('./myjournal-firebase.json')
 
@@ -22,6 +23,14 @@ const { serverAddress, serverPort, serverProtocol } = environment
 const baseUrl = `${serverProtocol}://${serverAddress}`
 if (serverPort) {
     baseUrl.concat(':', serverPort)
+}
+
+const errorHandler = (err, req, res, next) => {
+    console.error(TAG, err.stack)
+    res.status(500)
+    res.send({
+        error: "Something went wrong"
+    })
 }
 
 const parseWordPressAuthor = (wpAuthor) => {
@@ -62,24 +71,35 @@ const parseWordPressPost = (wpPost) => {
     }
 }
 
-app.get('/api/:version/posts', async (req, res) => {
+app.get('/api/:version/posts', async (req, res, next) => {
     const page = req.query.page || 1
     const postsUrl = `${baseUrl}/wp-json/wp/v2/posts?_embed&page=${page}&per_page=10`
-    const responseFromWp = await axios.get(postsUrl)
-    const toReturn = responseFromWp.data.map(post => parseWordPressPost(post))
-    await sleep(SLEEP_TIME);
-    res.send(toReturn)
+    try {
+        const responseFromWp = await axios.get(postsUrl)
+        const toReturn = responseFromWp.data.map(post => parseWordPressPost(post))
+        await sleep(SLEEP_TIME)
+
+        res.send(toReturn)
+    } catch(e) {
+        next(e)
+    }
 })
 
-app.get('/api/:version/posts/:id', async (req, res) => {
+app.get('/api/:version/posts/:id', async (req, res, next) => {
     const id = req.params['id']
     const postsUrl = `${baseUrl}/wp-json/wp/v2/posts/${id}?_embed`
-    const responseFromWp = await axios.get(postsUrl)
-    const toReturn = parseWordPressPost(responseFromWp.data)
-    res.send(toReturn)
+    try {
+        const responseFromWp = await axios.get(postsUrl)
+        const toReturn = parseWordPressPost(responseFromWp.data)
+        await sleep(SLEEP_TIME)
+    
+        res.send(toReturn)
+    } catch(e) {
+        next(e)
+    }
 })
 
-app.get('/api/:version/push', async (req, res) => {
+app.get('/api/:version/push', async (req, res, next) => {
     const dryRun = false
     const postsUrl = `${baseUrl}/wp-json/wp/v2/posts?_embed`
     const message = {
@@ -93,6 +113,7 @@ app.get('/api/:version/push', async (req, res) => {
         },
         topic: "news"
     }
+
     try {
         const responseFromWp = await axios.get(postsUrl)
         const posts = responseFromWp.data.map(post => parseWordPressPost(post))
@@ -102,13 +123,15 @@ app.get('/api/:version/push', async (req, res) => {
         message.data = {
             id: post.id + ""
         }
-        const response = await firebaseAdmin.messaging().send(message, dryRun)
+        await firebaseAdmin.messaging().send(message, dryRun)
+
         res.status(200).send('success')
-    } catch(error) {
-        console.log("Error: ", error)
-        res.status(500).send('error')
+    } catch(e) {
+        next(err)
     }
 })
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Server in ascolto sulla porta: ${PORT}`)
