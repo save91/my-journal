@@ -24,6 +24,7 @@ import com.example.saverio.myjournal.R;
 import com.example.saverio.myjournal.ui.settings.SettingsActivity;
 import com.example.saverio.myjournal.data.MyJournalPreferences;
 import com.example.saverio.myjournal.utilities.InjectorUtils;
+import com.google.android.gms.ads.MobileAds;
 
 public class MainActivity extends AppCompatActivity implements
         PostAdapter.PostAdapterOnClickHandler,
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posts);
+
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
 
         mRecyclerView = findViewById(R.id.recyclerview_posts);
         mErrorMessageTextView = findViewById(R.id.tv_error_message);

@@ -12,6 +12,9 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import com.example.saverio.myjournal.R;
 import com.example.saverio.myjournal.ui.settings.SettingsActivity;
 import com.example.saverio.myjournal.data.database.PostEntry;
@@ -24,6 +27,7 @@ public class DetailActivity extends AppCompatActivity {
     private DetailActivityViewModel mViewModel;
     private TextView mTitleDisplay;
     private ImageView mPostThunbnail;
+    private AdView mAdView;
     private WebView mWebView;
 
     @Override
@@ -34,6 +38,10 @@ public class DetailActivity extends AppCompatActivity {
         mTitleDisplay = findViewById(R.id.tv_title);
         mPostThunbnail = findViewById(R.id.iv_post_thundbail);
         mWebView = findViewById(R.id.wv_body);
+
+        mAdView = findViewById(R.id.ad_view);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
@@ -97,7 +105,9 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         mTitleDisplay.setText(postEntry.getTitle());
-        String html = "<link rel=\"stylesheet\" href=\"style.css\">" + postEntry.getBody();
+        String html = "<link rel=\"stylesheet\" href=\"style.css\">" +
+                "<link href=\"https://fonts.googleapis.com/css?family=Source+Sans+Pro\" rel=\"stylesheet\">" +
+                postEntry.getBody();
         mWebView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
 
         Uri uri = Uri.parse(postEntry.getMediumUrl());

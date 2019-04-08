@@ -9,19 +9,20 @@
 
     <ImageView
         android:id="@+id/iv_post_thundbail"
-        android:contentDescription="@string/desc_post_thundbail"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/desc_post_thundbail"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/default_thundbail" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_post_title"
         style="@style/TextAppearance.AppCompat.Medium"
+        android:fontFamily="@font/sourcesanspro_regular"
+        android:textColor="@color/colorPrimary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
