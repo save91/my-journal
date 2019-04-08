@@ -76,7 +76,7 @@ public class MyJournalNetworkDataSource {
 
                 String jsonResponse = NetworkUtils.getResponseFromHttpUrl(postsRequestUrl);
 
-                PostsResponse response = new ProxyPostsJsonParser().parse(jsonResponse);
+                PostsResponse response = new WordPressPostsJsonParser().parse(jsonResponse);
                 Log.d(TAG, "JSON Parsing finished");
 
                 if (response != null && response.getPosts().length != 0) {

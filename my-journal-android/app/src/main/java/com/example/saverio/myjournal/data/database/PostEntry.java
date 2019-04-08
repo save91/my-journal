@@ -10,7 +10,7 @@ public class PostEntry {
     private int id;
     private String title;
     private String body;
-    private int date;
+    private String date;
     private String thumbnailUrl;
     private String postThumbnailUrl;
     private String mediumUrl;
@@ -19,7 +19,7 @@ public class PostEntry {
             int id,
             String title,
             String body,
-            int date,
+            String date,
             String thumbnailUrl,
             String postThumbnailUrl,
             String mediumUrl
@@ -45,7 +45,7 @@ public class PostEntry {
         return body;
     }
 
-    public int getDate() {
+    public String getDate() {
         return date;
     }
 

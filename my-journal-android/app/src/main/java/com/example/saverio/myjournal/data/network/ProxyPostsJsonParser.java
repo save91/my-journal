@@ -39,7 +39,7 @@ public class ProxyPostsJsonParser {
         String id = jsonObject.getString(OWM_ID);
         String title = jsonObject.getString(OWM_TITLE);
         String body = jsonObject.getString(OWM_BODY);
-        int date = jsonObject.getInt(OWM_DATE);
+        String date = jsonObject.getString(OWM_DATE);
         JSONObject JSONfeatureMedia = jsonObject.getJSONObject(OWM_FEATURE_MEDIA);
         String thumbnailUrl = JSONfeatureMedia.optString(OWM_THUMBNAIL_URL);
         String postThumbnailUrl = JSONfeatureMedia.optString(OWM_POST_THUMBNAIL_URL);

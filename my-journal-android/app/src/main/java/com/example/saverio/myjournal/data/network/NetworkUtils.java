@@ -18,7 +18,7 @@ public final class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
-    private static final String POSTS_PATH = "/api/v1.0/posts";
+    private static final String POSTS_PATH = "/wp-json/wp/v2/posts";
 
     /**
      * Builds the URL used to talk to the proxy server
@@ -26,7 +26,7 @@ public final class NetworkUtils {
      * @return The URL to use to posts from proxy server.
      */
     public static URL buildPostsUrl(String server, int page) {
-        Uri builtUri = Uri.parse(server + POSTS_PATH + "?page=" + page).buildUpon()
+        Uri builtUri = Uri.parse(server + POSTS_PATH + "?_embed&per_page=10&page=" + page).buildUpon()
                 .build();
 
         URL url = null;
