@@ -42,8 +42,6 @@
 
         <com.google.android.gms.ads.AdView
             xmlns:ads="http://schemas.android.com/apk/res-auto"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
             android:id="@+id/ad_view"
             android:layout_height="100dp"
             android:layout_width="wrap_content"
