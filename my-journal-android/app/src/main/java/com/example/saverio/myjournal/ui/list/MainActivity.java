@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements
                         int totalItemCount = layoutManager.getItemCount();
                         int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
-                        if (!mLoading && totalItemCount <= (lastVisibleItem + 3)) {
+                        if (mLoading != null && !mLoading && totalItemCount <= (lastVisibleItem + 3)) {
                             String server = MyJournalPreferences.getServer(MainActivity.this);
                             mViewModel.getMorePosts(server);
                         }
